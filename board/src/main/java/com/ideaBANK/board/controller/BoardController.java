@@ -6,8 +6,11 @@ package com.ideaBANK.board.controller;
 import com.ideaBANK.board.dto.BoardDto;
 import com.ideaBANK.board.service.BoardService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 @Controller
 public class BoardController {
@@ -17,8 +20,14 @@ public class BoardController {
         this.boardService = boardService;
     }
 
+    //게시물의 목록을 가져오는 getBoardList()를 만들었으니,
+    // 가져온 데이터를 Model을 통해 View에 전달해줍니다.
+    //model.addAttribute("postList", boardDtoList);를 통하여 boardDtoList를
+    //board/list.html에 postList로 전달해 줍니다.
     @GetMapping("/")
-    public String list() {
+    public String list(Model model) {
+        List<BoardDto> boardDtoList = boardService.getBoardList();
+        model.addAttribute("postList", boardDtoList);
         return "board/list.html";
     }
 
