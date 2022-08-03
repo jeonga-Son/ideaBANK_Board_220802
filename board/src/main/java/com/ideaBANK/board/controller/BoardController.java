@@ -8,7 +8,9 @@ import com.ideaBANK.board.service.BoardService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 
@@ -38,6 +40,33 @@ public class BoardController {
 
     @PostMapping("/post")
     public String write(BoardDto boardDto) {
+        boardService.savePost(boardDto);
+        return "redirect:/";
+    }
+
+    //각 게시글을 클릭하면, /post/{id}으로 Get 요청을 합니다.
+    // (만약 1번 글을 클릭하면 /post/1로 접속됩니다.)
+    //BoardController에 detail()을 아래와 같이 구현하여,
+    //요청받았을 때 해당 id의 데이터가 View로 전달되도록 만들어줍니다.
+    @GetMapping("/post/{id}")
+    public String detail(@PathVariable("id") Long id, Model model) {
+        BoardDto boardDto = boardService.getPost(id);
+        model.addAttribute("post", boardDto);
+        return "board/detail.html";
+    }
+
+    //글을 조회하는 페이지에서 '수정' 버튼을 누르면, /post/edit/{id}으로 Get 요청을 합니다.
+    // (만약 1번 글에서 '수정' 버튼을 클릭하면 /post/edit/1로 접속됩니다.)
+    @GetMapping("/post/edit/{id}")
+    public String edit (@PathVariable("id") Long id, Model model) {
+        BoardDto boardDto = boardService.getPost(id);
+        model.addAttribute("post", boardDto);
+        return "board/edit.html";
+    }
+
+    //서버에게 Put 요청이 오게되면, 데이터베이스에 변경된 데이터를 저장한다.
+    @PutMapping("/post/edit/{id}")
+    public String update(BoardDto boardDto) {
         boardService.savePost(boardDto);
         return "redirect:/";
     }
