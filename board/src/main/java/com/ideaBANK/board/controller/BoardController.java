@@ -24,10 +24,13 @@ public class BoardController {
     //model.addAttribute("postList", boardDtoList);를 통하여 boardDtoList를
     //board/list.html에 postList로 전달해 줍니다.
     @GetMapping("/")
+    public String map(Model model) {
+        return "map/index";
+    }
+
+    @GetMapping("/board/list")
     public String list(Model model) {
-        List<BoardDto> boardDtoList = boardService.getBoardList();
-        model.addAttribute("postList", boardDtoList);
-        return "board/list.html";
+        return "board/list";
     }
 
     @GetMapping("/post")
@@ -38,13 +41,11 @@ public class BoardController {
     @PostMapping("/post")
     public String write(BoardDto boardDto) {
         boardService.savePost(boardDto);
-        return "redirect:/";
+        return "redirect:/board/list";
     }
 
-    //각 게시글을 클릭하면, /post/{id}으로 Get 요청을 합니다.
-    // (만약 1번 글을 클릭하면 /post/1로 접속됩니다.)
-    //BoardController에 detail()을 아래와 같이 구현하여,
-    //요청받았을 때 해당 id의 데이터가 View로 전달되도록 만들어줍니다.
+    //각 게시글을 클릭하면, /post/{id}으로 Get 요청을 합니다. (만약 1번 글을 클릭하면 /post/1로 접속됩니다.)
+    //BoardController에 detail()을 아래와 같이 구현하여, 요청받았을 때 해당 id의 데이터가 View로 전달되도록 만들어줍니다.
     @GetMapping("/post/{id}")
     public String detail(@PathVariable("id") Long id, Model model) {
         BoardDto boardDto = boardService.getPost(id);
